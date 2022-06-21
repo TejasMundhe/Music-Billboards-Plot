@@ -10,3 +10,45 @@ library(tidyverse)
 library(billboard)
 ```
 
+```{r, echo = FALSE}
+x <- wiki_hot_100s |>
+  as_tibble() |>
+  mutate(year = as.numeric(year))
+```
+
+> Which artist appears the most times?
+
+```{r, echo = FALSE}
+# Some artist appear differently at different times
+temp <- x |> 
+  group_by(artist) |> 
+  summarise(appearences = n()) |> 
+  arrange(desc(appearences))
+temp|>
+  slice(1:10)
+```
+`r temp$artist[1]` appears the most! 
+
+> How many artists appear only once?
+
+```{r, echo = FALSE}
+temp2 <- temp |>
+  filter(appearences == 1)
+  temp2
+```
+
+A total of `r nrow(temp2)` artists appear only once in the Billboard Top 100 from `r min(x$year)` to `r max(x$year)`.
+
+
+> Which year features the most distinct artists? 
+
+```{r, echo = FALSE}
+temp3 <- x |> 
+  group_by(year) |> 
+  distinct(artist) |> 
+  summarise(uniq = n()) |> 
+  arrange(uniq)
+temp3 |>
+  slice(1:5)
+```
+`r temp3$year[1]` features `r temp3$uniq[1]` unique artists. Nice, this is by far the most of any year!
